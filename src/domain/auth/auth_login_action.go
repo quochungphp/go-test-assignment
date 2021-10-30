@@ -11,9 +11,9 @@ type AuthLoginAction struct {
 	Db *pg.DB
 }
 
-func (self AuthLoginAction) Execute(Username string, Password string) (tokenDetail token.TokenDetail, err error) {
+func (Auth AuthLoginAction) Execute(Username string, Password string) (tokenDetail token.TokenDetail, err error) {
 	userData := &user.User{ID: Username, Password: Password}
-	err = self.Db.Model(userData).WherePK().Select()
+	err = Auth.Db.Model(userData).WherePK().Select()
 	if err != nil {
 		return token.TokenDetail{}, errors.Wrapf(err, "Unauthorized")
 	}

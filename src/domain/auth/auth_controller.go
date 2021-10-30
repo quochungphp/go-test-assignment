@@ -12,7 +12,7 @@ type AuthController struct {
 
 // name...
 func (ctrl AuthController) name() string {
-	return "src.AuthController"
+	return "auth.AuthController"
 }
 
 // Login ...
