@@ -12,13 +12,13 @@ type AuthLoginAction struct {
 }
 
 func (Auth AuthLoginAction) Execute(Username string, Password string) (tokenDetail token.TokenDetail, err error) {
-	userData := &user.User{ID: Username, Password: Password}
-	err = Auth.Db.Model(userData).WherePK().Select()
+	user := user.Users{}
+	err = Auth.Db.Model(&user).Where("username = ?", Username).Where("password =?", Password).Select()
 	if err != nil {
 		return token.TokenDetail{}, errors.Wrapf(err, "Unauthorized")
 	}
 
-	tokenDetail, err = token.CreateToken(userData.ID)
+	tokenDetail, err = token.CreateToken(user.ID)
 	if err != nil {
 		return token.TokenDetail{}, errors.Wrapf(err, "Generate token error")
 	}

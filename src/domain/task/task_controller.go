@@ -34,7 +34,7 @@ func (ctrl TaskController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	taskDetail, err := ctrl.TaskCreateAction.Execute(payload.Content, "userId-1")
+	taskDetail, err := ctrl.TaskCreateAction.Execute(payload.Content, "1")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(fmt.Sprintf("While a creating task error: %s", err))

@@ -13,22 +13,22 @@ import (
 )
 
 type TokenDetail struct {
-	AccessToken         string
-	RefreshToken        string
-	CorrelationId       string
-	AccessTokenExpires  int64
-	RefreshTokenExpires int64
+	AccessToken         string `sql:"text" json:"accessToken"`
+	RefreshToken        string `sql:"text" json:"refreshToken"`
+	RequestUserID       string `sql:"text" json:"requestUserId"`
+	AccessTokenExpires  int64  `sql:"int" json:"accessTokenExpires"`
+	RefreshTokenExpires int64  `sql:"int" json:"refreshTokenExpires"`
 }
 
 func CreateToken(UserID string) (tokenDetails TokenDetail, err error) {
 	// Init token details
 	tokenDetails.AccessTokenExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
 	tokenDetails.RefreshTokenExpires = time.Now().Add(time.Hour * 24 * 7).Unix()
-	tokenDetails.CorrelationId = uuid.NewV4().String()
+	tokenDetails.RequestUserID = uuid.NewV4().String()
 	// Access token
 	accessTokenClaims := jwt.MapClaims{}
 	accessTokenClaims["authorized"] = true
-	accessTokenClaims["correlationId"] = tokenDetails.CorrelationId
+	accessTokenClaims["correlationId"] = tokenDetails.RequestUserID
 	accessTokenClaims["userId"] = UserID
 	accessTokenClaims["exp"] = tokenDetails.AccessTokenExpires
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
@@ -38,7 +38,7 @@ func CreateToken(UserID string) (tokenDetails TokenDetail, err error) {
 	}
 	// Creating Refresh Token
 	refreshTokenClaims := jwt.MapClaims{}
-	refreshTokenClaims["correlationId"] = tokenDetails.CorrelationId
+	refreshTokenClaims["correlationId"] = tokenDetails.RequestUserID
 	refreshTokenClaims["userId"] = UserID
 	refreshTokenClaims["exp"] = tokenDetails.RefreshTokenExpires
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
