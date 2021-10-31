@@ -1,7 +1,7 @@
 --- create user table
 CREATE TABLE public.users (
   id bigserial NOT NULL,
-  username varchar(50) NOT NULL,
+  username varchar(50) unique NOT NULL,
   password varchar(50) NOT NULL,
   created_date timestamp(6) NULL DEFAULT LOCALTIMESTAMP,
   max_todo INTEGER DEFAULT 5 NOT NULL,
@@ -25,8 +25,9 @@ CREATE INDEX "created_date_IDX"  ON public."tasks" USING btree ("created_date");
 
 
 --- Insert users
-INSERT INTO public.users ("username", "password", max_todo) VALUES('user1', 'password', 5);
-INSERT INTO public.users ("username", "password", max_todo) VALUES('user2', 'password', 5);
+INSERT INTO public.users (id, username, "password", created_date, max_todo) VALUES(1, 'user1', '$2a$10$MSlzbaal5/i3PMaGMDocjefbyQzdR58MWMyWA1JrFScgsmO4Fku62', '2021-10-31 08:20:35.159', 5);
+INSERT INTO public.users (id, username, "password", created_date, max_todo) VALUES(2, 'user2', '$2a$10$MSlzbaal5/i3PMaGMDocjefbyQzdR58MWMyWA1JrFScgsmO4Fku62', '2021-10-31 08:20:35.159', 5);
+
 
 --- Insert tasks
 INSERT INTO public.tasks ("content", user_id) VALUES('I''m a developer', 1);

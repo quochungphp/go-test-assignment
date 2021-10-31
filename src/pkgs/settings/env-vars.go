@@ -9,6 +9,8 @@ const (
 	PgPass   = "PG_PASS"
 	PgDB     = "PG_DB"
 
+	SaltRounds = "SALT_ROUNDS"
+
 	ENV         = "ENV"
 	ENVFilePath = "src/pkgs/settings/config.env"
 	Port        = "PORT"

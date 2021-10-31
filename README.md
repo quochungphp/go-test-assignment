@@ -1,4 +1,5 @@
 ### Setup database
+
 1. Pull & run docker iamge
 
 ```bash
@@ -56,3 +57,34 @@ go get -u ./...
 ```bash
 go mod vendor
 ```
+
+3. Run app
+
+```bash
+go run main.go
+```
+
+### Explaining project
+
+1. No one uses http GET for login.
+
+- Instead of GET to POST.
+
+2. Change NoSQL Live to Postgres
+
+3.Update columns.
+
+- No one uses ID of column with TEXT type, expect ony NoSQL using uuid -> Change to bigserialize
+- Change created_date from TEXT to timestamp and set default and create INDEX for it
+- Change user_id of task to INT8 and update INDEX for it
+- Add a username into Users table and check UNIQUE
+- No one exposes raw password, which is very risk. I applied bcrypt hash to encrypt password.
+
+4. DDD architecture
+
+- Currently, I applied DDD (3 layers) and used self-container components, which helps me narrow down business logic in a single directory
+- Domain contains endpoints and logic core
+- Infrastructure contains drivers, services, providers, middleware...etc
+- Pkgs contains utils, common, re-useable codes
+
+5. Apply unit test

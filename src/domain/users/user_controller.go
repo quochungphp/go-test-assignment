@@ -1,23 +1,25 @@
-package auth
+package users
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 )
 
-type AuthController struct {
-	AuthLoginAction AuthLoginAction
+// UserController ...
+type UserController struct {
+	UserCreateAction UserCreateAction
 }
 
 // name...
-func (ctrl AuthController) name() string {
-	return "auth.AuthController"
+func (ctrl UserController) name() string {
+	return "User.UserController"
 }
 
-// Login ...
-func (ctrl AuthController) Login(w http.ResponseWriter, r *http.Request) {
-	payload := &AuthLoginPayload{}
+// Create ...
+func (ctrl UserController) Create(w http.ResponseWriter, r *http.Request) {
+	payload := &UserCreatePayload{}
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 
@@ -40,13 +42,13 @@ func (ctrl AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, err := ctrl.AuthLoginAction.Execute(payload.Username, payload.Password)
+	UserDetail, err := ctrl.UserCreateAction.Execute(payload.Username, payload.Password)
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode("Unauthorized")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(fmt.Sprintf("While a creating user error: %s", err))
 		return
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(accessToken)
+	json.NewEncoder(w).Encode(UserDetail)
 }

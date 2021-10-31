@@ -1,4 +1,4 @@
-package task
+package tasks
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// TaskController ...
 type TaskController struct {
 	TaskCreateAction TaskCreateAction
 }
@@ -21,6 +22,7 @@ func (ctrl TaskController) Create(w http.ResponseWriter, r *http.Request) {
 	payload := &TaskCreatePayload{}
 	body, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
+
 	w.Header().Set("Content-type", "application/json")
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -31,6 +33,12 @@ func (ctrl TaskController) Create(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal(body, &payload); err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode("Invalid payload")
+		return
+	}
+
+	if validErrs := payload.Validate(); len(validErrs) > 0 {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(validErrs)
 		return
 	}
 

@@ -8,7 +8,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/quochungphp/go-test-assignment/src/domain/auth"
-	"github.com/quochungphp/go-test-assignment/src/domain/task"
+	"github.com/quochungphp/go-test-assignment/src/domain/tasks"
+	"github.com/quochungphp/go-test-assignment/src/domain/users"
 	"github.com/quochungphp/go-test-assignment/src/infrastructure/middlewares"
 	"github.com/quochungphp/go-test-assignment/src/infrastructure/pg_driver"
 	"github.com/quochungphp/go-test-assignment/src/pkgs/settings"
@@ -32,6 +33,14 @@ func main() {
 	// Init Gorilla Router
 	router := mux.NewRouter()
 
+	// User create action
+	userCreatAction := users.UserCreateAction{pgSession}
+	userCtrl := users.UserController{
+		userCreatAction,
+	}
+	userRouter := router.PathPrefix("/users").Subrouter()
+	userRouter.HandleFunc("", userCtrl.Create).Methods("POST").Name("UserCreateAction")
+
 	// Login action
 	authLoginAction := auth.AuthLoginAction{pgSession}
 	authCtrl := auth.AuthController{
@@ -41,12 +50,12 @@ func main() {
 	authRouter.HandleFunc("/login", authCtrl.Login).Methods("POST").Name("AuthLoginAction")
 
 	// Create task action
-	createTaskAction := task.TaskCreateAction{pgSession}
-	taskCtrl := task.TaskController{
+	createTaskAction := tasks.TaskCreateAction{pgSession}
+	taskCtrl := tasks.TaskController{
 		createTaskAction,
 	}
 
-	taskRouter := router.PathPrefix("/task").Subrouter()
+	taskRouter := router.PathPrefix("/tasks").Subrouter()
 	taskRouter.HandleFunc("/create", taskCtrl.Create).Methods("POST").Name("TaskCreateAction")
 	taskRouter.Use(middlewares.AuthMiddleware)
 

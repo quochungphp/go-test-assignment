@@ -1,4 +1,4 @@
-package task
+package tasks
 
 // TaskCreatePayload ...
 type TaskCreatePayload struct {

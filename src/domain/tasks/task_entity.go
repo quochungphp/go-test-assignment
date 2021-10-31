@@ -1,4 +1,4 @@
-package task
+package tasks
 
 type Task struct {
 	ID          string `sql:"primary_key" json:"id"`
